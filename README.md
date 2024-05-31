@@ -28,3 +28,12 @@ There are many different ways to run the Antelope services on your server (such 
 - [stop.sh](https://github.com/eosusa/antelope-config/blob/main/scripts/stop.sh) - Copy to node data directory
   - Stops previous nodeos instance running (assuming PID matches)
   - Compresses current stderr.txt log file into /logs/
+
+## CPU Performance Settings
+It is critical that your Antelope node has the processor configured for optimal performance mode to assure the processing (and therefore potential billing) of transactions on the node are accurate. Each processor can have it's own specific settings that can/should be modified, and since we run Intel i9 processors, the settings below are recommended for the Intel i9 (tested on 10th and 14th generations), but they could be different depending on your node's processor. We have found there are 3 main settings that are needed:
+- Force the CPU power profile to "Performance" (```/usr/bin/cpupower frequency-set -g performance```)
+- Disable CPU idle states (```/usr/bin/cpupower idle-set -D 11```)
+- Disable CPU pstate (Intel) (```echo passive > /sys/devices/system/cpu/intel_pstate/status```)
+  
+As the CPU performance/idle settings get reset upon restart of the OS, it's recommended to add the commands to update them as a system service so they persist the reboot (Intel pstate is file-based/persistent). [cpuperf.sh](https://github.com/eosusa/antelope-config/blob/main/cpuperf/cpupower.sh) is available to create the service and update the settings as needed (run as root).
+
